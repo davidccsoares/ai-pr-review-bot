@@ -2,8 +2,6 @@ name: AI PR Review Azure DevOps
 
 on:
   workflow_dispatch:
-  schedule:           
-    - cron: '*/5 * * * *'
 
 jobs:
   ai-review:
