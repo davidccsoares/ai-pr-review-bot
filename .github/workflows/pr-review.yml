@@ -1,36 +1,32 @@
-name: AI PR Review
+name: AI PR Review Azure DevOps
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]  # 🔹 PRs criados ou atualizados
+  workflow_dispatch:
+  schedule:           
+    - cron: '*/5 * * * *'
 
 jobs:
   ai-review:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout do repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Configurar Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # 3️⃣ Instalar dependências
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Rodar o bot AI
       - name: Run AI review
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       # Token do GitHub Actions
-          OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}   # Token OpenRouter
-        run: |
-          PR_NUMBER=$(echo $GITHUB_REF | awk -F'/' '{print $3}')
-          REPO_FULL_NAME="${{ github.repository }}"  # ex: username/repo
-          python review.py $PR_NUMBER $REPO_FULL_NAME
+          AZURE_ORG: ${{ secrets.AZURE_ORG }}
+          AZURE_PROJECT: ${{ secrets.AZURE_PROJECT }}
+          AZURE_TOKEN: ${{ secrets.AZURE_TOKEN }}
+          OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
+        run: python review.py
